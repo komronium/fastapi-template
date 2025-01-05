@@ -2,15 +2,21 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from app.core.security import hash_password
 from app.models.user import User
-from app.schemas.user import UserCreate
+from app.schemas.user import UserCreate, UserUpdate
 
 
 class UserService:
 
     @staticmethod
+    def _get_user_or_404(db: Session, user_id: int) -> User:
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
+        return user
+
+    @staticmethod
     async def get_all_users(db: Session):
         return db.query(User).all()
-
 
     @staticmethod
     async def create_user(user_data: UserCreate, db: Session):
@@ -28,8 +34,22 @@ class UserService:
 
     @staticmethod
     async def get_user_by_id(user_id: int, db: Session):
-        user = db.query(User).filter(User.id == user_id).first()
-        if not user:
-            raise HTTPException(detail='User not found', status_code=status.HTTP_404_NOT_FOUND)
+        return UserService._get_user_or_404(db, user_id)
 
-        return user
+    @staticmethod
+    async def update_user(db: Session, user_id: int, user: UserUpdate):
+        db_user = UserService._get_user_or_404(db, user_id)
+        for key, value in user.model_dump().items():
+            if value is not None:
+                setattr(db_user, key, value)
+
+        db.commit()
+        db.refresh(db_user)
+        return db_user
+
+    @staticmethod
+    async def delete_user(db: Session, user_id: int):
+        db_user = UserService._get_user_or_404(db, user_id)
+        db.delete(db_user)
+        db.commit()
+        return db_user
