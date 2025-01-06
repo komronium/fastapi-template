@@ -3,7 +3,7 @@ from pydantic import BaseModel, EmailStr, Field
 
 class Token(BaseModel):
     access_token: str
-    tekon_type: str = 'bearer'
+    token_type: str = 'bearer'
 
 
 class LoginRequest(BaseModel):

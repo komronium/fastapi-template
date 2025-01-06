@@ -9,4 +9,8 @@ class Base:
 
     @declared_attr
     def __tablename__(self) -> str:
-        return re.sub(r'(?<=[a-z0-9])([A-Z])', r'_\1', self.__name__).lower()
+        """
+        Converts CamelCase class names to snake_case table names.
+        For example, 'MyModel' becomes 'my_model'.
+        """
+        return re.sub(r'(?<!^)(?=[A-Z])', '_', self.__name__).lower()

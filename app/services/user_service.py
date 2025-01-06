@@ -11,7 +11,10 @@ class UserService:
     def _get_user_or_404(db: Session, user_id: int) -> User:
         user = db.query(User).filter(User.id == user_id).first()
         if not user:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='User not found'
+            )
         return user
 
     @staticmethod
@@ -22,7 +25,10 @@ class UserService:
     async def create_user(user_data: UserCreate, db: Session):
         existing_user = db.query(User).filter(User.email == user_data.email).first()
         if existing_user:
-            raise HTTPException(detail='Email already exists', status_code=status.HTTP_400_BAD_REQUEST)
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Email already exists'
+            )
 
         hashed_password = hash_password(user_data.password)
         user_data.password = hashed_password

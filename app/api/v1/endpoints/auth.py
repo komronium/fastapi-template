@@ -10,15 +10,15 @@ router = APIRouter(prefix='/api/v1', tags=['Auth'])
 
 @router.post('/login', response_model=Token, status_code=status.HTTP_200_OK)
 def login(
-        login_request: LoginRequest,
-        db: Session = Depends(get_db)
+    login_request: LoginRequest,
+    db: Session = Depends(get_db)
 ):
     return AuthService.login(db, login_request)
 
 
 @router.post('/signup', response_model=UserOut, status_code=status.HTTP_200_OK)
 def signup(
-        signup_request: SignupRequest,
-        db: Session = Depends(get_db)
+    signup_request: SignupRequest,
+    db: Session = Depends(get_db)
 ):
     return AuthService.signup(db, signup_request)
