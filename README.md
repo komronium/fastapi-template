@@ -1,27 +1,37 @@
 # FastAPI Template
 
 ## Project Description
-This is a FastAPI project template with a scalable and clean architecture, designed to help you quickly start building production-ready applications.
+This is a FastAPI project template with a scalable and clean architecture, designed to help you quickly start building production-ready applications. It provides a set of common features like user authentication, secure password handling, Google login integration, and flexible user management, making it easy to integrate additional functionalities and scale your project.
 
 ### Features:
-- User authentication and management
-- Database migrations with Alembic
-- Scalable API structure with versioned endpoints
-- Secure password handling and encryption
-- Data validation using Pydantic
-- Simple and extensible service layer
+- **User authentication and management**\
+Provides a complete user management system with secure registration, login, password change functionality, and Google login integration via OAuth2. Users can also upload and update their profile images, with support for managing user activity status.
+- **Database Migrations with Alembic**\
+  Seamlessly manage database schema changes and migrations using Alembic.
+- **Scalable API Structure**\
+  Versioned API endpoints (api/v1) for better scalability and easier maintenance.
+- **Secure Password Handling and Encryption**\
+  Passwords are securely hashed and encrypted for storage and retrieval.
+- **Data Validation with Pydantic**\
+  Ensures that the input and output data conform to the expected formats using Pydantic models.
+- **Simple and Extensible Service Layer**\
+  A service layer that handles the business logic, allowing for easy maintenance and extensibility.
 
 ### Technologies Used:
-- FastAPI
-- Uvicorn
-- Pydantic (data validation)
-- Alembic (database migrations)
-- SQLAlchemy (ORM)
+- **FastAPI**\
+A high-performance web framework for building APIs with Python 3.7+
 
-### Project Structure:
-- `app/api/`: API endpoints and dependencies
-- `app/models/`: Database models
-- `app/schemas/`: Pydantic models for data validation
-- `app/services/`: Business logic and service layer
-- `app/core/`: Configuration and utility functions
-- `app/db/`: Database setup and session management
+- **Uvicorn**\
+ASGI server for running FastAPI applications
+
+- **Pydantic**\
+Data validation and settings management using Python type annotations.
+
+- **Alembic**\
+A database migration tool for SQLAlchemy.
+
+- **SQLAlchemy**\
+ORM (Object Relational Mapper) for database interaction.
+
+- **OAuth2**\
+Secure login system with Google OAuth2 integration.
