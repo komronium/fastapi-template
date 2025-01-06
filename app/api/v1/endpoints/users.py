@@ -1,11 +1,15 @@
 from typing import List
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
-from app.api.deps import get_db
+from app.api.deps import get_db, get_admin_user
 from app.schemas.user import UserCreate, UserUpdate, UserOut
 from app.services.user_service import UserService
 
-router = APIRouter(prefix='/api/v1/users', tags=['Users'])
+router = APIRouter(
+    prefix='/api/v1/users',
+    tags=['Users'],
+    dependencies=[Depends(get_admin_user)]
+)
 
 
 @router.get('/', response_model=List[UserOut], status_code=status.HTTP_200_OK)

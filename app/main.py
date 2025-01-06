@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.core.config import settings
-from app.api.v1.endpoints import users, auth
+from app.api.v1.endpoints import users, auth, profile
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -9,3 +9,4 @@ app = FastAPI(
 
 app.include_router(auth.router)
 app.include_router(users.router)
+app.include_router(profile.router)
