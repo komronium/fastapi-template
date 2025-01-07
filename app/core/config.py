@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     # Application metadata
     PROJECT_NAME: str = 'FastAPI Template'
-    PROJECT_VERSION: str = '1.0.0'
+    PROJECT_VERSION: str = '1.0.1'
 
     # Database configuration
     DATABASE_URL: str
