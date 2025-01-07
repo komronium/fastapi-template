@@ -1,8 +1,9 @@
 from sqlalchemy.orm import Session
-from fastapi import HTTPException, status
+from fastapi import HTTPException, UploadFile, status
 from app.core.security import hash_password
 from app.models.user import User
 from app.schemas.user import UserCreate, UserUpdate
+from app.services.storage_service import StorageService
 
 
 class UserService:
@@ -52,6 +53,46 @@ class UserService:
         db.commit()
         db.refresh(db_user)
         return db_user
+
+    @staticmethod
+    async def update_profile_image(db: Session, user_id: int, file: UploadFile) -> User:
+        user = UserService._get_user_or_404(db, user_id)
+        try:
+            if user.profile_image:
+                await StorageService.delete_file(user.profile_image)
+
+            image_url = await StorageService.upload_file(
+                file=file,
+                folder='profile_images'
+            )
+
+            user.profile_image = image_url
+            db.commit()
+            db.refresh(user)
+            return user
+        except Exception as e:
+            db.rollback()
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail='Failed to update profile image'
+            )
+
+    @staticmethod
+    async def remove_profile_image(db: Session, user_id: int) -> User:
+        user = UserService._get_user_or_404(db, user_id)
+        try:
+            if user.profile_image:
+                await StorageService.delete_file(user.profile_image)
+                user.profile_image = None
+                db.commit()
+                db.refresh(user)
+            return user
+        except Exception as e:
+            db.rollback()
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to remove profile image"
+            )
 
     @staticmethod
     async def delete_user(db: Session, user_id: int):

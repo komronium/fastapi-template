@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, UploadFile, File, status
 from sqlalchemy.orm import Session
 from app.models.user import User
 from app.schemas.user import UserOut, UserUpdate
@@ -30,3 +30,20 @@ async def delete_profile(
     current_user: User = Depends(get_current_user)
 ):
     await UserService.delete_user(db, current_user.id)
+
+
+@router.post('/image', response_model=UserOut, status_code=status.HTTP_200_OK)
+async def upload_profile_image(
+        file: UploadFile = File(...),
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
+):
+    return await UserService.update_profile_image(db, current_user.id, file)
+
+
+@router.delete('/image', response_model=UserOut, status_code=status.HTTP_200_OK)
+async def remove_profile_image(
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
+):
+    return await UserService.remove_profile_image(db, current_user.id)
