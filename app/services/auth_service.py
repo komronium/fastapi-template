@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from pydantic import EmailStr
@@ -16,6 +17,12 @@ class AuthService:
         return user
 
     @staticmethod
+    def update_last_login(user: User, db: Session):
+        user.last_login = datetime.now()
+        db.commit()
+        db.refresh(user)
+
+    @staticmethod
     def login(db: Session, login_request: LoginRequest):
         user = AuthService.authenticate(db, login_request.email, login_request.password)
         if not user:
@@ -25,6 +32,7 @@ class AuthService:
                 headers={'WWW-Authenticate': 'Bearer'},
             )
 
+        AuthService.update_last_login(user, db)
         access_token = create_access_token({'sub': user.email})
         return {'access_token': access_token, 'token_type': 'bearer'}
 
