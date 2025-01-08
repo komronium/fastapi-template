@@ -1,3 +1,4 @@
+from typing import List
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, UploadFile, status
 from app.core.security import hash_password
@@ -19,11 +20,11 @@ class UserService:
         return user
 
     @staticmethod
-    async def get_all_users(db: Session):
+    async def get_all_users(db: Session) -> List[User]:
         return db.query(User).all()
 
     @staticmethod
-    async def create_user(user_data: UserCreate, db: Session):
+    async def create_user(user_data: UserCreate, db: Session) -> User:
         existing_user = db.query(User).filter(User.email == user_data.email).first()
         if existing_user:
             raise HTTPException(
@@ -40,11 +41,11 @@ class UserService:
         return db_user
 
     @staticmethod
-    async def get_user_by_id(user_id: int, db: Session):
+    async def get_user_by_id(user_id: int, db: Session) -> User:
         return UserService._get_user_or_404(db, user_id)
 
     @staticmethod
-    async def update_user(db: Session, user_id: int, user: UserUpdate):
+    async def update_user(db: Session, user_id: int, user: UserUpdate) -> User:
         db_user = UserService._get_user_or_404(db, user_id)
         for key, value in user.model_dump().items():
             if value is not None:
@@ -95,7 +96,7 @@ class UserService:
             )
 
     @staticmethod
-    async def delete_user(db: Session, user_id: int):
+    async def delete_user(db: Session, user_id: int) -> User:
         db_user = UserService._get_user_or_404(db, user_id)
         db.delete(db_user)
         db.commit()

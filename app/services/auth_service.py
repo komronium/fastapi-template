@@ -1,3 +1,4 @@
+from typing import Optional, Dict
 from datetime import datetime
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
@@ -10,20 +11,20 @@ from app.schemas.auth import LoginRequest, SignupRequest
 class AuthService:
 
     @staticmethod
-    def authenticate(db: Session, email: EmailStr, password: str):
+    def authenticate(db: Session, email: EmailStr, password: str) -> Optional[User]:
         user = db.query(User).filter(User.email == email).first()
         if not user or not verify_password(password, user.password):
             return None
         return user
 
     @staticmethod
-    def update_last_login(user: User, db: Session):
+    def update_last_login(user: User, db: Session) -> None:
         user.last_login = datetime.now()
         db.commit()
         db.refresh(user)
 
     @staticmethod
-    def login(db: Session, login_request: LoginRequest):
+    def login(db: Session, login_request: LoginRequest) -> Dict[str, str]:
         user = AuthService.authenticate(db, login_request.email, login_request.password)
         if not user:
             raise HTTPException(
@@ -37,7 +38,7 @@ class AuthService:
         return {'access_token': access_token, 'token_type': 'bearer'}
 
     @staticmethod
-    def signup(db: Session, signup_request: SignupRequest):
+    def signup(db: Session, signup_request: SignupRequest) -> User:
         existing_user = db.query(User).filter(User.email == signup_request.email).first()
         if existing_user:
             raise HTTPException(

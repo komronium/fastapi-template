@@ -6,7 +6,7 @@ This is a FastAPI project template with a scalable and clean architecture, desig
 ### Features:
 
 - **User authentication and management**\
-Provides a complete user management system with secure registration, login, password change functionality, and Google login integration via OAuth2. Users can also upload and update their profile images, with support for managing user activity status.
+Provides a complete user management system with secure registration, login and password change functionality. Users can also upload and update their profile images, with support for managing user activity status.
 
 - **Profile Image Upload and Management**\
 Users can upload, update, and delete their profile images. Images are stored securely in AWS S3 with validation and public access URL generation.
@@ -42,9 +42,6 @@ A database migration tool for SQLAlchemy.
 
 - **SQLAlchemy**\
 ORM (Object Relational Mapper) for database interaction.
-
-- **OAuth2**\
-Secure login system with Google OAuth2 integration.
 
 - **AWS S3 Integration**\
 Profile images are securely uploaded and managed using AWS S3, with support for file validation and public URL generation.

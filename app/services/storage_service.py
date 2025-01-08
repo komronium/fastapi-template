@@ -1,16 +1,17 @@
 import uuid
 import boto3
+from typing import List
 from botocore.exceptions import ClientError
 from fastapi import UploadFile, HTTPException
 from app.core.config import settings
 
 
 class StorageService:
-    ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
-    MAX_FILE_SIZE = 5 * 1024 * 1024
+    ALLOWED_EXTENSIONS: List[str] = ['jpg', 'jpeg', 'png', 'gif']
+    MAX_FILE_SIZE: int = 5 * 1024 * 1024  # 5 MB
 
     @staticmethod
-    def _get_s3_client():
+    def _get_s3_client() -> boto3.client:
         return boto3.client(
             's3',
             aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
@@ -39,6 +40,7 @@ class StorageService:
             ext = StorageService._get_file_extension(file)
             key = f"{folder}/{uuid.uuid4()}.{ext}"
             s3_client = StorageService._get_s3_client()
+
             s3_client.upload_fileobj(
                 file.file,
                 settings.AWS_STORAGE_BUCKET_NAME,
@@ -46,7 +48,7 @@ class StorageService:
                 ExtraArgs={'ACL': 'public-read'}
             )
 
-            return f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{key}"
+            return StorageService.get_file_url(key)
         except ClientError as e:
             raise HTTPException(
                 status_code=500,
