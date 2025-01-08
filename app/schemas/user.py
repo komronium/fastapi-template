@@ -1,6 +1,6 @@
 from typing import Optional
 from datetime import datetime
-from pydantic import BaseModel, EmailStr, Field, HttpUrl
+from pydantic import BaseModel, EmailStr, Field
 
 
 class UserBase(BaseModel):
@@ -18,14 +18,11 @@ class UserUpdate(BaseModel):
 
 class UserOut(UserBase):
     id: int
-    profile_image: Optional[HttpUrl]
-    last_login: Optional[datetime]
-
     is_active: bool
     is_admin: bool
-
+    last_login: Optional[datetime] = None
     created_at: datetime
-    updated_at: Optional[datetime]
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

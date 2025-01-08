@@ -18,21 +18,20 @@ def create_access_token(data: dict) -> str:
     payload = data.copy()
     expire = datetime.now() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     payload.update({'exp': expire})
-    encoded_jwt = jwt.encode(
+    
+    return jwt.encode(
         payload,
         settings.SECRET_KEY.get_secret_value(),
         algorithm=settings.ALGORITHM
     )
-    return encoded_jwt
 
 
 def decode_access_token(token: str) -> dict | None:
     try:
-        payload = jwt.decode(
+        return jwt.decode(
             token,
             settings.SECRET_KEY.get_secret_value(),
             algorithms=[settings.ALGORITHM]
         )
-        return payload
     except JWTError:
         return None

@@ -6,7 +6,7 @@ from app.core.security import decode_access_token
 from app.db.session import SessionLocal
 from app.models.user import User
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='api/v1/login')
 
 
 def get_db() -> Generator:
@@ -17,9 +17,9 @@ def get_db() -> Generator:
         db.close()
 
 
-def get_current_user(
-    token: str = Depends(oauth2_scheme),
-    db: Session = Depends(get_db)
+async def get_current_user(
+    db: Session = Depends(get_db),
+    token: str = Depends(oauth2_scheme)
 ) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -39,7 +39,7 @@ def get_current_user(
     return user
 
 
-def get_admin_user(
+async def get_admin_user(
     current_user: User = Depends(get_current_user)
 ) -> User:
     if not current_user.is_admin:

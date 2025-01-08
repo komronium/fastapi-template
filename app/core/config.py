@@ -1,29 +1,34 @@
-from pydantic import SecretStr
+from pydantic import SecretStr, PostgresDsn
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    # Application metadata
-    PROJECT_NAME: str = 'FastAPI Template'
-    PROJECT_VERSION: str = '1.0.1'
 
-    # Database configuration
-    DATABASE_URL: str
+    # Application
+    PROJECT_NAME: str = "FastAPI Template"
+    PROJECT_VERSION: str = "1.0.2"
+    DEBUG: bool = False
 
-    # Authentication configuration
+    # API
+    API_V1_STR: str = "/api/v1"
+
+    # Database
+    DATABASE_URL: PostgresDsn
+    DB_POOL_SIZE: int = 5
+    DB_MAX_OVERFLOW: int = 10
+
+    # Authentication
     SECRET_KEY: SecretStr
     ALGORITHM: str = 'HS256'
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
-    # S3 Configuration
-    AWS_ACCESS_KEY_ID: str
-    AWS_SECRET_ACCESS_KEY: SecretStr
-    AWS_STORAGE_BUCKET_NAME: str
-    AWS_S3_REGION: str = 'eu-north-1'
+    # CORS
+    BACKEND_CORS_ORIGINS: list[str] = ['http://localhost:8000']
 
     class Config:
         env_file = '.env'
         env_file_encoding = 'utf-8'
+        case_sensitive = True
 
 
 settings = Settings()

@@ -11,21 +11,21 @@ from app.schemas.auth import LoginRequest, SignupRequest
 class AuthService:
 
     @staticmethod
-    def authenticate(db: Session, email: EmailStr, password: str) -> Optional[User]:
+    async def authenticate(db: Session, email: EmailStr, password: str) -> Optional[User]:
         user = db.query(User).filter(User.email == email).first()
         if not user or not verify_password(password, user.password):
             return None
         return user
 
     @staticmethod
-    def update_last_login(user: User, db: Session) -> None:
+    async def update_last_login(user: User, db: Session) -> None:
         user.last_login = datetime.now()
         db.commit()
         db.refresh(user)
 
     @staticmethod
-    def login(db: Session, login_request: LoginRequest) -> Dict[str, str]:
-        user = AuthService.authenticate(db, login_request.email, login_request.password)
+    async def login(db: Session, login_request: LoginRequest) -> Dict[str, str]:
+        user = await AuthService.authenticate(db, login_request.email, login_request.password)
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -33,12 +33,13 @@ class AuthService:
                 headers={'WWW-Authenticate': 'Bearer'},
             )
 
-        AuthService.update_last_login(user, db)
+        await AuthService.update_last_login(user, db)
+
         access_token = create_access_token({'sub': user.email})
         return {'access_token': access_token, 'token_type': 'bearer'}
 
     @staticmethod
-    def signup(db: Session, signup_request: SignupRequest) -> User:
+    async def signup(db: Session, signup_request: SignupRequest) -> User:
         existing_user = db.query(User).filter(User.email == signup_request.email).first()
         if existing_user:
             raise HTTPException(
