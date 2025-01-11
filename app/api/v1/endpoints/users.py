@@ -1,6 +1,8 @@
 from typing import List
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
+
+from app.models.user import User
 from app.api.deps import get_db, get_admin_user
 from app.schemas.user import UserCreate, UserUpdate, UserOut
 from app.services.user_service import UserService
@@ -22,7 +24,7 @@ router = APIRouter(
 )
 async def list_users(
     db: Session = Depends(get_db)
-) -> List[UserOut]:
+) -> List[User]:
     return await UserService.get_all_users(db)
 
 
@@ -38,7 +40,7 @@ async def list_users(
 async def create_user(
     user: UserCreate,
     db: Session = Depends(get_db)
-) -> UserOut:
+) -> User:
     return await UserService.create_user(user, db)
 
 
@@ -58,7 +60,7 @@ async def get_user(
     return await UserService.get_user_by_id(user_id, db)
 
 
-@router.put(
+@router.patch(
     '/{user_id}', 
     response_model=UserOut, 
     status_code=status.HTTP_200_OK,
@@ -71,7 +73,7 @@ async def update_user(
     user_id: int,
     user_update: UserUpdate,
     db: Session = Depends(get_db)
-) -> UserOut:
+) -> User:
     return await UserService.update_user(db, user_id, user_update)
 
 

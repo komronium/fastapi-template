@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
+
 from app.api.deps import get_db
+from app.models.user import User
 from app.schemas.user import UserOut
 from app.schemas.auth import LoginRequest, SignupRequest, Token
 from app.services.auth_service import AuthService
@@ -40,5 +42,5 @@ async def login(
 async def signup(
     request: SignupRequest,
     db: Session = Depends(get_db)
-) -> UserOut:
+) -> User:
     return await AuthService.signup(db, request)

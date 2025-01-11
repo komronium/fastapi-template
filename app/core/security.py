@@ -1,6 +1,8 @@
+from typing import Optional, Dict
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
 from jose import jwt, JWTError
+
 from app.core.config import settings
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
@@ -26,7 +28,7 @@ def create_access_token(data: dict) -> str:
     )
 
 
-def decode_access_token(token: str) -> dict | None:
+def decode_access_token(token: str) -> Optional[Dict]:
     try:
         return jwt.decode(
             token,

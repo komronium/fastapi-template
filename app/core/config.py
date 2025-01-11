@@ -1,3 +1,4 @@
+from typing import List
 from pydantic import SecretStr, PostgresDsn
 from pydantic_settings import BaseSettings
 
@@ -8,9 +9,6 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "FastAPI Template"
     PROJECT_VERSION: str = "1.0.2"
     DEBUG: bool = False
-
-    # API
-    API_V1_STR: str = "/api/v1"
 
     # Database
     DATABASE_URL: PostgresDsn
@@ -23,7 +21,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     # CORS
-    BACKEND_CORS_ORIGINS: list[str] = ['http://localhost:8000']
+    BACKEND_CORS_ORIGINS: List[str] = ['http://localhost:8000']
 
     class Config:
         env_file = '.env'
